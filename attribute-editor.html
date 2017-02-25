@@ -1,0 +1,95 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/iron-signals/iron-signals.html">
+
+<dom-module id="attribute-editor">
+    <template>
+        <paper-dialog>
+            <h2>Header</h2>
+            <paper-dialog-scrollable>
+                <template is="dom-repeat" items="{{localusercontent}}">
+                    <paper-input label$="{{item.key}}" value$="[[item.value]]" on-change="_handleValueChange"></paper-input>
+                </template>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button  on-click="_handleSave">Accept</paper-button>
+            </div>
+        </paper-dialog>
+        <iron-signals on-iron-signal-attribute-save="_initiateAttributeSave"></iron-signals>
+    </template>
+    <script>
+        Polymer({
+            is: 'attribute-editor',
+
+            properties: {
+                usercontent: {
+                    type: Object,
+                    notify: true,
+                },
+
+                localusercontent: {
+                    type: Object,
+                    notify: true
+                },
+
+                path: {
+                    type: String,
+                    value: '',
+                    notify: true,
+                    reflectToAttribute: true
+                }
+
+            },
+
+            open: function() {
+
+                this.set('localusercontent',[]);
+                this._convertObjToArray(this.usercontent)
+                this.$$('paper-dialog').open();
+            },
+
+            _handleSave: function() {
+                for(var i=0; i< this.localusercontent.length; i++) {
+                    let data = this.localusercontent[i];
+                    this.set('usercontent.' + data.key, data.value);
+                }
+                this.fire('value-changed', {
+                    usercontent: this.usercontent,
+                    contentId: this.contentId
+                });
+
+                // close the dialog box
+                this.$$('paper-dialog').close();
+            },
+
+            _convertObjToArray: function(obj) {
+                for(var key in obj) {
+                    this.push('localusercontent', {
+                        key: key,
+                        value: obj[key]
+                    });
+                }
+            },
+
+            _handleValueChange: function(e, detail) {
+                this.localusercontent[e.model.index]['value'] = e.target.value;
+            },
+
+            _initiateAttributeSave: function() {
+                this.fire('iron-signal', {
+                    name: 'page-operation',
+                    data: {
+                        operation: 'save',
+                        path: this.path,
+                        contentnode: this.contentId,
+                        value: this.usercontent
+                    }
+                });
+            }
+        })
+    </script>
+</dom-module>

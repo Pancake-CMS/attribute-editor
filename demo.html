@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <link rel="import" href="./attribute-editor.html">
+    <link rel="import" href="bower_components/polymer/polymer.html">
+    <body>
+        <template is="dom-bind" id="Demo">
+            <attribute-editor
+                usercontent="[[usercontent]]"
+                path="[[path]]"
+                content-id="[[contentId]]"
+                on-value-changed="handleChange"></attribute-editor>
+            <button on-click="handleClick">Click me</button>
+        </template>
+
+        <script>
+            Demo.handleClick = function() {
+                document.querySelector('attribute-editor').open();
+            }
+
+            Demo.usercontent = {
+                'alt': 'styff',
+                'src': 'styff'
+            }
+
+            Demo.contentId = 'image-url';
+
+            Demo.path = '/some/random/path';
+
+            Demo.handleChange = function(e, detail) {
+                console.log(Demo.usercontent);
+            }
+        </script>
+    </body>
+</html>
