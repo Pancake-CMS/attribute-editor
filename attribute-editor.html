@@ -4,11 +4,28 @@
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../iron-signals/iron-signals.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 
 <dom-module id="attribute-editor">
     <template>
+        <style>
+            :host {
+                display: inline:block;
+                padding: 5px;
+                background: white;
+                position: relative;
+                top: -10px;
+                left: -30px;
+                border-radius: 5px;
+            }
+            iron-icon {
+                cursor: pointer;
+            }
+        </style>
+        <iron-icon icon="icons:create" on-click="open"></iron-icon>
         <paper-dialog>
-            <h2>Header</h2>
+            <h2>Edit Attributes</h2>
             <paper-dialog-scrollable>
                 <template is="dom-repeat" items="{{localusercontent}}">
                     <paper-input label$="{{item.key}}" value$="[[item.value]]" on-change="_handleValueChange"></paper-input>
